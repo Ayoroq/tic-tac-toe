@@ -37,23 +37,19 @@ const gameBoard = () => {
   };
 };
 
+// Factory function to create players
+const player = (name, symbol) => {
+  return { name, symbol };
+};
+
 // Main game controller
 const gameController = (player1 = "player1", player2 = "player2") => {
   const table = document.querySelector(".board");
-  const players = [
-    {
-      name: player1,
-      value: "X",
-    },
-    {
-      name: player2,
-      value: "O",
-    },
-  ];
+  const start = document.querySelector(".start");
 
-  let currentPlayer = players[0];
-  let gameActive = true;
-  let board = gameBoard();
+  let board
+  let currentPlayer
+  let gameActive
 
   // Switch between players
   function switchPlayer() {
@@ -151,16 +147,34 @@ const gameController = (player1 = "player1", player2 = "player2") => {
 
     const winner = confirmWinner();
     if (winner) {
-      gameActive = false;
-      table.removeEventListener("click", detectClick);
+      stopGame(); // the function is defined below
       console.log(`${winner} wins!`);
     } else {
       switchPlayer();
     }
   }
-  return { playRound, checkWinner };
+
+  // function to start/begin the game
+  function beginGame() {
+    start.addEventListener("click", startGame);
+  }
+
+  function startGame() {
+    board = gameBoard();
+    gameActive = true;
+    currentPlayer = players[0];
+    playRound();
+  }
+
+  // function to stop the game
+  function stopGame() {
+    gameActive = false;
+    table.removeEventListener("click", detectClick);
+  }
+
+  return { beginGame, checkWinner };
 };
 
 // Start the game
 const game = gameController();
-game.playRound();
+game.startGame();
