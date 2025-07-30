@@ -178,6 +178,40 @@ const gameController = () => {
     return;
   }
 
+  function addConfetti() {
+    const duration = 5 * 1000,
+      animationEnd = Date.now() + duration,
+      defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      // since particles fall down, start a bit higher than random
+      confetti(
+        Object.assign({}, defaults, {
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+        })
+      );
+      confetti(
+        Object.assign({}, defaults, {
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+        })
+      );
+    }, 250);
+  }
+
   // Main game loop to play one round
   function playRound() {
     table.addEventListener("click", detectClick);
@@ -205,11 +239,14 @@ const gameController = () => {
       stopGame();
       console.log("It's a tie!");
       return;
-    }else if (winner) {
+    } else if (winner) {
       drawLineThroughWinner(winner);
+      addConfetti();
       stopGame(); // the function is defined below
-      const winningPlayer = players.find((player) => player.value === winner[0]).name;
-      console.log(players)
+      const winningPlayer = players.find(
+        (player) => player.value === winner[0]
+      ).name;
+      console.log(players);
       console.log(winner[0]);
       console.log(`${winningPlayer} wins!`);
     } else {
