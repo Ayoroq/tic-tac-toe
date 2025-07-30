@@ -1,4 +1,4 @@
-const prompt = require("prompt-sync")({ sigint: true });
+// const prompt = require("prompt-sync")({ sigint: true });
 
 // Factory function to create game board
 const gameBoard = () => {
@@ -17,7 +17,7 @@ const gameBoard = () => {
     return board;
   }
 
-  // Add player move to board
+  // Add a move to the board
   function addMove(row, column, value) {
     if (board[row][column] !== "") {
       return;
@@ -25,22 +25,21 @@ const gameBoard = () => {
     board[row][column] = value;
   }
 
-  // Display current board state
-  function printBoard() {
-    for (let i = 0; i < rows; i++) {
-      console.log(board[i]);
-    }
-  }
-
+  // // Display current board state
+  // function printBoard() {
+  //   for (let i = 0; i < rows; i++) {
+  //     console.log(board[i]);
+  //   }
+  // }
   return {
     getBoard,
     addMove,
-    printBoard,
   };
 };
 
 // Main game controller
 const gameController = (player1 = "player1", player2 = "player2") => {
+  const table = document.querySelector(".board");
   const players = [
     {
       name: player1,
@@ -127,36 +126,36 @@ const gameController = (player1 = "player1", player2 = "player2") => {
     }
   }
 
-  // Main game loop
+  // Main game loop to play one round
   function playRound() {
-    while (gameActive) {
-      console.log(`${currentPlayer.name}'s turn`);
-      const values = prompt("Enter row and column (0-2) comma separated: ").split(",");
-      const row = parseInt(values[0]);
-      const column = parseInt(values[1]);
-      
-      // Validate input
-      if (isNaN(row) || isNaN(column) || row < 0 || row > 2 || column < 0 || column > 2) {
-        console.log("Invalid input. Please enter numbers 0-2.");
-        continue;
-      }
-      
-      // Check if cell is occupied
-      if (board.getBoard()[row][column] !== "") {
-        console.log("Cell already occupied. Try again.");
-        continue;
-      }
-      
-      board.addMove(row, column, currentPlayer.value);
-      board.printBoard();
-      const winner = confirmWinner();
-      if (winner) {
-        gameActive = false;
-        console.log(`${winner} wins!`);
-        return winner;
-      } else {
-        switchPlayer();
-      }
+    table.addEventListener("click", detectClick);
+  }
+
+  function detectClick(event) {
+    const clickedElement = event.target;
+    if (clickedElement.tagName !== "TD") return;
+
+    const clickedCell = clickedElement;
+    if (clickedCell.textContent !== "") {
+      console.log("Cell already occupied. Try again.");
+      return;
+    }
+
+    const clickedRow = clickedCell.parentNode;
+    const rowIndex = clickedRow.rowIndex;
+    const colIndex = clickedCell.cellIndex;
+
+    console.log(`Clicked Row: ${rowIndex}, Clicked Column: ${colIndex}`);
+    board.addMove(rowIndex, colIndex, currentPlayer.value);
+    clickedCell.textContent = currentPlayer.value;
+
+    const winner = confirmWinner();
+    if (winner) {
+      gameActive = false;
+      table.removeEventListener("click", detectClick);
+      console.log(`${winner} wins!`);
+    } else {
+      switchPlayer();
     }
   }
   return { playRound, checkWinner };
@@ -164,4 +163,4 @@ const gameController = (player1 = "player1", player2 = "player2") => {
 
 // Start the game
 const game = gameController();
-game.playRound()
+game.playRound();

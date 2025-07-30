@@ -1,0 +1,11 @@
+table{
+    border-collapse: collapse;
+}
+
+
+.cell{
+    height: 5rem;
+    width: 5rem;
+    background-color: red;
+    border: 1px solid black;
+}
