@@ -66,6 +66,10 @@ const gameController = () => {
   const symbol1 = document.querySelector(".symbol-a");
   const symbol2 = document.querySelector(".symbol-b");
   const dialog = document.querySelector(".dialog");
+  const restart = document.querySelector(".restart");
+  const winnerDetails = document.querySelector(".winner");
+  const finish = document.querySelector(".finish");
+  
 
   changeSymbol();
 
@@ -235,20 +239,20 @@ const gameController = () => {
     clickedCell.textContent = currentPlayer.value;
 
     const winner = confirmWinner();
-    if (winner === "tie") {
+    if (winner){
       stopGame();
-      console.log("It's a tie!");
-      return;
-    } else if (winner) {
-      drawLineThroughWinner(winner);
-      addConfetti();
-      stopGame(); // the function is defined below
-      const winningPlayer = players.find(
-        (player) => player.value === winner[0]
-      ).name;
-      console.log(players);
-      console.log(winner[0]);
-      console.log(`${winningPlayer} wins!`);
+      finish.showModal();
+      if (winner === "tie") {
+        winnerDetails.textContent = "It's a tie!";
+      } else {
+      const winningPlayer = players.find((player) => player.value === winner[0]).name;
+      winnerDetails.textContent = `${winningPlayer} is the winner!`;
+        drawLineThroughWinner(winner);
+        addConfetti();
+      }
+      restart.addEventListener("click", function () {
+        location.reload();
+      });
     } else {
       switchPlayer();
     }
