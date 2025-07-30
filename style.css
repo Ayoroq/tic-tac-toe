@@ -9,3 +9,7 @@ table{
     background-color: red;
     border: 1px solid black;
 }
+
+.dialog::backdrop{
+  opacity: 0.5;
+}

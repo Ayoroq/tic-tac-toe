@@ -42,14 +42,44 @@ const player = (name, symbol) => {
   return { name, symbol };
 };
 
+// function to change the symbols selected by the users
+function changeSymbol() {
+  const symbol1 = document.querySelector(".symbol-a");
+  const symbol2 = document.querySelector(".symbol-b");
+
+  symbol1.addEventListener("change", () => {
+    if (symbol1.value === "X") {
+      symbol2.value = "O";
+    } else {
+      symbol2.value = "X";
+    }
+  });
+  symbol2.addEventListener("change", () => {
+    if (symbol2.value === "X") {
+      symbol1.value = "O";
+    } else {
+      symbol1.value = "X";
+    }
+  });
+  return { symbol1, symbol2 };
+}
+
 // Main game controller
-const gameController = (player1 = "player1", player2 = "player2") => {
+const gameController = () => {
   const table = document.querySelector(".board");
   const start = document.querySelector(".start");
+  const player1 = document.querySelector(".first-player");
+  const player2 = document.querySelector(".second-player");
+  const symbol1 = document.querySelector(".symbol-a");
+  const symbol2 = document.querySelector(".symbol-b");
 
-  let board
-  let currentPlayer
-  let gameActive
+  changeSymbol();
+
+  let board;
+  let currentPlayer;
+  let gameActive;
+
+  const players = [];
 
   // Switch between players
   function switchPlayer() {
@@ -156,13 +186,30 @@ const gameController = (player1 = "player1", player2 = "player2") => {
 
   // function to start/begin the game
   function beginGame() {
-    start.addEventListener("click", startGame);
+    start.addEventListener("click", function (event) {
+      event.preventDefault();
+      startGame();
+    });
   }
 
   function startGame() {
+    players.length = 0; // clear the array
+    const firstPlayer = player(player1.value, symbol1.value);
+    const secondPlayer = player(player2.value, symbol2.value);
+    players.push(
+      {
+        name: firstPlayer.name,
+        value: firstPlayer.symbol,
+      },
+      {
+        name: secondPlayer.name,
+        value: secondPlayer.symbol,
+      }
+    );
     board = gameBoard();
     gameActive = true;
     currentPlayer = players[0];
+    console.log(currentPlayer);
     playRound();
   }
 
@@ -175,6 +222,6 @@ const gameController = (player1 = "player1", player2 = "player2") => {
   return { beginGame, checkWinner };
 };
 
-// Start the game
+// // Start the game
 const game = gameController();
-game.startGame();
+game.beginGame();
