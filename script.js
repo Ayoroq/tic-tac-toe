@@ -95,7 +95,7 @@ const gameController = () => {
         rawBoard[i][0] === rawBoard[i][1] &&
         rawBoard[i][1] === rawBoard[i][2]
       ) {
-        return rawBoard[i][0]; // Return 'X' or 'O'
+        return [rawBoard[i][0], i, "rows"]; // Return 'X' or 'O'
       }
     }
 
@@ -106,7 +106,7 @@ const gameController = () => {
         rawBoard[0][i] === rawBoard[1][i] &&
         rawBoard[1][i] === rawBoard[2][i]
       ) {
-        return rawBoard[0][i]; // Return 'X' or 'O'
+        return [rawBoard[0][i], i, "columns"]; // Return 'X' or 'O'
       }
     }
 
@@ -116,7 +116,7 @@ const gameController = () => {
       rawBoard[0][0] === rawBoard[1][1] &&
       rawBoard[1][1] === rawBoard[2][2]
     ) {
-      return rawBoard[0][0]; // Return 'X' or 'O'
+      return [rawBoard[0][0], "left-diagonal"]; // Return 'X' or 'O'
     }
 
     if (
@@ -124,7 +124,7 @@ const gameController = () => {
       rawBoard[0][2] === rawBoard[1][1] &&
       rawBoard[1][1] === rawBoard[2][0]
     ) {
-      return rawBoard[0][2]; // Return 'X' or 'O'
+      return [rawBoard[0][2], "right-diagonal"]; // Return 'X' or 'O'
     }
 
     // Check for tie
@@ -139,11 +139,43 @@ const gameController = () => {
 
     if (winner === "tie") {
       return "tie";
-    } else if (winner === "✕" || winner === "⭕") {
-      return players.find((player) => player.value === winner).name;
+    } else if (winner) {
+      return winner;
     } else {
       return null;
     }
+  }
+  // function to draw line once a winner is determined
+  function drawLineThroughWinner(winner) {
+    if (winner === "tie") {
+      // Handle tie case
+      return;
+    }
+    if (winner[2] === "rows") {
+      const winningRow = winner[1];
+      for (let i = 0; i < 3; i++) {
+        table.rows[winningRow].cells[i].classList.add("horizontal");
+      }
+    }
+    if (winner[2] === "columns") {
+      const winningColumn = winner[1];
+      for (let i = 0; i < 3; i++) {
+        table.rows[i].cells[winningColumn].classList.add("vertical");
+      }
+    }
+    if (winner[1] === "left-diagonal") {
+      for (let i = 0; i < 3; i++) {
+        console.log(table.rows[i].cells[i]);
+        table.rows[i].cells[i].classList.add("diagonal-left");
+      }
+    }
+    if (winner[1] === "right-diagonal") {
+      for (let i = 0; i < 3; i++) {
+        console.log(table.rows[i].cells[2 - i]);
+        table.rows[i].cells[2 - i].classList.add("diagonal-right");
+      }
+    }
+    return;
   }
 
   // Main game loop to play one round
@@ -165,14 +197,21 @@ const gameController = () => {
     const rowIndex = clickedRow.rowIndex;
     const colIndex = clickedCell.cellIndex;
 
-    console.log(`Clicked Row: ${rowIndex}, Clicked Column: ${colIndex}`);
     board.addMove(rowIndex, colIndex, currentPlayer.value);
     clickedCell.textContent = currentPlayer.value;
 
     const winner = confirmWinner();
-    if (winner) {
+    if (winner === "tie") {
+      stopGame();
+      console.log("It's a tie!");
+      return;
+    }else if (winner) {
+      drawLineThroughWinner(winner);
       stopGame(); // the function is defined below
-      console.log(`${winner} wins!`);
+      const winningPlayer = players.find((player) => player.value === winner[0]).name;
+      console.log(players)
+      console.log(winner[0]);
+      console.log(`${winningPlayer} wins!`);
     } else {
       switchPlayer();
     }
@@ -205,7 +244,6 @@ const gameController = () => {
     board = gameBoard();
     gameActive = true;
     currentPlayer = players[0];
-    console.log(currentPlayer);
     playRound();
   }
 

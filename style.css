@@ -1,23 +1,28 @@
-table {
-  border-collapse: collapse;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: var(--text-colour);
+}
+
+.header{
+    text-align: center;
+}
+
+.main {
+  background-color: var(--main-colour);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .cell {
   height: 5rem;
   width: 5rem;
-  background-color: dodgerblue;
-  border: 1px solid black;
-}
-
-::backdrop {
-  background-image: linear-gradient(
-    45deg,
-    magenta,
-    rebeccapurple,
-    dodgerblue,
-    green
-  );
-  opacity: 0.75;
+  background-color: rgb(177, 216, 255);
+  border: 0.5px solid black;
 }
 
 .dialog {
@@ -38,9 +43,87 @@ table {
   gap: 1rem;
 }
 
-td{
-    text-align: center;
-    font-size: x-large;
-    font-weight: bold;
-    color: white
+.board {
+  border-collapse: collapse;
+  border: none;
+}
+
+.board tr:first-child td {
+  border-top: none;
+}
+
+.board tr:last-child td {
+  border-bottom: none;
+}
+
+.board tr td:first-child {
+  border-left: none;
+}
+
+.board tr td:last-child {
+  border-right: none;
+}
+
+td {
+  text-align: center;
+  font-size: x-large;
+  font-weight: bold;
+  color: white;
+}
+
+.diagonal-right,
+.diagonal-left,
+.vertical,
+.horizontal {
+  position: relative; /* Make the cell a positioning context */
+  overflow: hidden; /* Hide overflow if content goes beyond the line */
+}
+
+.diagonal-right::after,
+.diagonal-left::after,
+.vertical::after,
+.horizontal::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.diagonal-right::after {
+  background: linear-gradient(
+    to top left,
+    transparent 49%,
+    black 50%,
+    transparent 50%
+  );
+}
+
+.diagonal-left::after {
+  background: linear-gradient(
+    to top right,
+    transparent 49%,
+    black 50%,
+    transparent 50%
+  );
+}
+
+.vertical::after {
+  background: linear-gradient(
+    to left,
+    transparent 49%,
+    black 50%,
+    transparent 50%
+  );
+}
+
+.horizontal::after {
+  background: linear-gradient(
+    to bottom,
+    transparent 49%,
+    black 50%,
+    transparent 50%
+  );
+
 }
