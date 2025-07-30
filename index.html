@@ -32,7 +32,7 @@
     </main>
     <section class="section">
       <dialog class="dialog" open closedby="closerequest">
-        <form class="form" method="dialog">
+        <form class="form" method="dialog" onsubmit="return false">
           <p>
             <label for="first-player">Player 1</label>
             <input
@@ -43,8 +43,8 @@
               required
             />
             <select name="symbol-a" id="symbol-a" class="symbol-a">
-              <option value="X">X</option>
-              <option value="O">O</option>
+              <option value="✕">✕</option>
+              <option value="⭕">⭕</option>
             </select>
           </p>
           <p>
@@ -57,8 +57,8 @@
               required
             />
             <select name="symbol-b" id="symbol-b" class="symbol-b">
-              <option value="O">O</option>
-              <option value="X">X</option>
+              <option value="⭕">⭕</option>
+              <option value="✕">✕</option>
             </select>
           </p>
           <p>

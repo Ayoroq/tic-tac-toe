@@ -48,19 +48,12 @@ function changeSymbol() {
   const symbol2 = document.querySelector(".symbol-b");
 
   symbol1.addEventListener("change", () => {
-    if (symbol1.value === "X") {
-      symbol2.value = "O";
-    } else {
-      symbol2.value = "X";
-    }
+    symbol1.value === "✕" ? (symbol2.value = "⭕") : (symbol2.value = "✕");
   });
   symbol2.addEventListener("change", () => {
-    if (symbol2.value === "X") {
-      symbol1.value = "O";
-    } else {
-      symbol1.value = "X";
-    }
+    symbol2.value === "✕" ? (symbol1.value = "⭕") : (symbol1.value = "✕");
   });
+
   return { symbol1, symbol2 };
 }
 
@@ -72,6 +65,7 @@ const gameController = () => {
   const player2 = document.querySelector(".second-player");
   const symbol1 = document.querySelector(".symbol-a");
   const symbol2 = document.querySelector(".symbol-b");
+  const dialog = document.querySelector(".dialog");
 
   changeSymbol();
 
@@ -145,7 +139,7 @@ const gameController = () => {
 
     if (winner === "tie") {
       return "tie";
-    } else if (winner === "X" || winner === "O") {
+    } else if (winner === "✕" || winner === "⭕") {
       return players.find((player) => player.value === winner).name;
     } else {
       return null;
@@ -187,8 +181,10 @@ const gameController = () => {
   // function to start/begin the game
   function beginGame() {
     start.addEventListener("click", function (event) {
-      event.preventDefault();
-      startGame();
+      if (player1.value && player2.value) {
+        startGame();
+        dialog.close();
+      }
     });
   }
 
