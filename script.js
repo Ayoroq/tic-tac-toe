@@ -164,6 +164,11 @@ const gameController = () => {
     }, 250);
   }
 
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+
   // Main game loop to play one round
   function playRound() {
     table.addEventListener("click", detectClick);
@@ -238,8 +243,8 @@ const gameController = () => {
   function startGame() {
     players.length = 0;
     players.push(
-      { name: player1.value.trim(), value: symbol1.value },
-      { name: player2.value.trim(), value: symbol2.value }
+      { name: capitalizeFirstLetter(player1.value.trim()), value: symbol1.value },
+      { name: capitalizeFirstLetter(player2.value.trim()), value: symbol2.value }
     );
     board = gameBoard();
     currentPlayer = players[0];
