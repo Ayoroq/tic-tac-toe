@@ -2,16 +2,7 @@
 
 // Factory function to create game board
 const gameBoard = () => {
-  const rows = 3;
-  const columns = 3;
-  const board = [];
-  // Initialize empty 3x3 board
-  for (let i = 0; i < rows; i++) {
-    board[i] = [];
-    for (let j = 0; j < columns; j++) {
-      board[i].push("");
-    }
-  }
+  const board = Array(3).fill().map(() => Array(3).fill(""));
 
   function getBoard() {
     return board;
@@ -47,14 +38,25 @@ function changeSymbol() {
   const symbol1 = document.querySelector(".symbol-a");
   const symbol2 = document.querySelector(".symbol-b");
 
-  symbol1.addEventListener("change", () => {
-    symbol1.value === "✕" ? (symbol2.value = "⭕") : (symbol2.value = "✕");
-  });
-  symbol2.addEventListener("change", () => {
-    symbol2.value === "✕" ? (symbol1.value = "⭕") : (symbol1.value = "✕");
-  });
+  function handleSymbol1Change() {
+    symbol2.value = symbol1.value === "✕" ? "⭕" : "✕";
+  }
 
-  return { symbol1, symbol2 };
+  function handleSymbol2Change() {
+    symbol1.value = symbol2.value === "✕" ? "⭕" : "✕";
+  }
+
+  symbol1.addEventListener("change", handleSymbol1Change);
+  symbol2.addEventListener("change", handleSymbol2Change);
+
+  return {
+    symbol1,
+    symbol2,
+    cleanup: () => {
+      symbol1.removeEventListener("change", handleSymbol1Change);
+      symbol2.removeEventListener("change", handleSymbol2Change);
+    },
+  };
 }
 
 // Main game controller
@@ -70,14 +72,11 @@ const gameController = () => {
   const winnerDetails = document.querySelector(".winner");
   const finish = document.querySelector(".finish");
   const playerTurn = document.querySelector(".player-turn");
-  
 
-  changeSymbol();
+  const symbolController = changeSymbol();
 
   let board;
   let currentPlayer;
-  let gameActive;
-
   const players = [];
 
   // Switch between players
@@ -87,69 +86,36 @@ const gameController = () => {
       : (currentPlayer = players[0]);
   }
 
-  // Check for winning conditions
   function checkWinner() {
-    const rawBoard = board.getBoard();
-    const rows = rawBoard.length;
-    const columns = rawBoard[0].length;
-
+    const b = board.getBoard();
+    
     // Check rows
-    for (let i = 0; i < rows; i++) {
-      if (
-        rawBoard[i][0] !== "" &&
-        rawBoard[i][0] === rawBoard[i][1] &&
-        rawBoard[i][1] === rawBoard[i][2]
-      ) {
-        return [rawBoard[i][0], i, "rows"]; // Return 'X' or 'O'
+    for (let i = 0; i < 3; i++) {
+      if (b[i][0] && b[i][0] === b[i][1] && b[i][1] === b[i][2]) {
+        return [b[i][0], i, "rows"];
       }
     }
-
+    
     // Check columns
-    for (let i = 0; i < columns; i++) {
-      if (
-        rawBoard[0][i] !== "" &&
-        rawBoard[0][i] === rawBoard[1][i] &&
-        rawBoard[1][i] === rawBoard[2][i]
-      ) {
-        return [rawBoard[0][i], i, "columns"]; // Return 'X' or 'O'
+    for (let i = 0; i < 3; i++) {
+      if (b[0][i] && b[0][i] === b[1][i] && b[1][i] === b[2][i]) {
+        return [b[0][i], i, "columns"];
       }
     }
-
+    
     // Check diagonals
-    if (
-      rawBoard[0][0] !== "" &&
-      rawBoard[0][0] === rawBoard[1][1] &&
-      rawBoard[1][1] === rawBoard[2][2]
-    ) {
-      return [rawBoard[0][0], "left-diagonal"]; // Return 'X' or 'O'
+    if (b[0][0] && b[0][0] === b[1][1] && b[1][1] === b[2][2]) {
+      return [b[0][0], "left-diagonal"];
     }
-
-    if (
-      rawBoard[0][2] !== "" &&
-      rawBoard[0][2] === rawBoard[1][1] &&
-      rawBoard[1][1] === rawBoard[2][0]
-    ) {
-      return [rawBoard[0][2], "right-diagonal"]; // Return 'X' or 'O'
+    if (b[0][2] && b[0][2] === b[1][1] && b[1][1] === b[2][0]) {
+      return [b[0][2], "right-diagonal"];
     }
-
+    
     // Check for tie
-    if (rawBoard.flat().every((cell) => cell !== "")) {
-      return "tie";
-    }
+    return b.flat().every(cell => cell) ? "tie" : null;
   }
 
-  // Convert winner symbol to player name
-  function confirmWinner() {
-    const winner = checkWinner();
 
-    if (winner === "tie") {
-      return "tie";
-    } else if (winner) {
-      return winner;
-    } else {
-      return null;
-    }
-  }
   // function to draw line once a winner is determined
   function drawLineThroughWinner(winner) {
     if (winner === "tie") {
@@ -170,50 +136,46 @@ const gameController = () => {
     }
     if (winner[1] === "left-diagonal") {
       for (let i = 0; i < 3; i++) {
-        console.log(table.rows[i].cells[i]);
         table.rows[i].cells[i].classList.add("diagonal-left");
       }
     }
     if (winner[1] === "right-diagonal") {
       for (let i = 0; i < 3; i++) {
-        console.log(table.rows[i].cells[2 - i]);
         table.rows[i].cells[2 - i].classList.add("diagonal-right");
       }
     }
     return;
   }
 
+  let confettiInterval;
+
   function addConfetti() {
-    const duration = 5 * 1000,
-      animationEnd = Date.now() + duration,
-      defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-    function randomInRange(min, max) {
-      return Math.random() * (max - min) + min;
-    }
+    const randomInRange = (min, max) => Math.random() * (max - min) + min;
 
-    const interval = setInterval(function () {
+    confettiInterval = setInterval(() => {
       const timeLeft = animationEnd - Date.now();
 
       if (timeLeft <= 0) {
-        return clearInterval(interval);
+        clearInterval(confettiInterval);
+        return;
       }
 
       const particleCount = 50 * (timeLeft / duration);
 
-      // since particles fall down, start a bit higher than random
-      confetti(
-        Object.assign({}, defaults, {
-          particleCount,
-          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        })
-      );
-      confetti(
-        Object.assign({}, defaults, {
-          particleCount,
-          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        })
-      );
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
     }, 250);
   }
 
@@ -227,10 +189,7 @@ const gameController = () => {
     if (clickedElement.tagName !== "TD") return;
 
     const clickedCell = clickedElement;
-    if (clickedCell.textContent !== "") {
-      console.log("Cell already occupied. Try again.");
-      return;
-    }
+    if (clickedCell.textContent) return;
 
     const clickedRow = clickedCell.parentNode;
     const rowIndex = clickedRow.rowIndex;
@@ -239,35 +198,42 @@ const gameController = () => {
     board.addMove(rowIndex, colIndex, currentPlayer.value);
     clickedCell.textContent = currentPlayer.value;
 
-    const winner = confirmWinner();
-    if (winner){
+    const winner = checkWinner();
+    if (winner) {
       stopGame();
       finish.showModal();
       if (winner === "tie") {
         winnerDetails.textContent = "It's a tie!";
       } else {
-      const winningPlayer = players.find((player) => player.value === winner[0]).name;
-      winnerDetails.textContent = `${winningPlayer} is the winner!`;
+        const winningPlayer = players.find(
+          (player) => player.value === winner[0]
+        ).name;
+        winnerDetails.textContent = `${winningPlayer} is the winner!`;
         drawLineThroughWinner(winner);
         addConfetti();
       }
-      restart.addEventListener("click", function () {
-        location.reload();
-      });
     } else {
       switchPlayer();
       playerTurn.textContent = `${currentPlayer.name}'s turn`;
     }
   }
 
+  function handleRestart() {
+    clearInterval(confettiInterval);
+    symbolController.cleanup();
+    location.reload();
+  }
+
   // function to start/begin the game
   function beginGame() {
-    start.addEventListener("click", function (event) {
+    start.addEventListener("click", (event) => {
       if (player1.value && player2.value) {
         startGame();
         dialog.close();
       }
     });
+
+    restart.addEventListener("click", handleRestart);
   }
 
   function startGame() {
@@ -275,25 +241,16 @@ const gameController = () => {
     const firstPlayer = player(player1.value, symbol1.value);
     const secondPlayer = player(player2.value, symbol2.value);
     players.push(
-      {
-        name: firstPlayer.name,
-        value: firstPlayer.symbol,
-      },
-      {
-        name: secondPlayer.name,
-        value: secondPlayer.symbol,
-      }
+      { name: firstPlayer.name, value: firstPlayer.symbol },
+      { name: secondPlayer.name, value: secondPlayer.symbol }
     );
     board = gameBoard();
-    gameActive = true;
     currentPlayer = players[0];
     playerTurn.textContent = `${currentPlayer.name}'s turn`;
     playRound();
   }
 
-  // function to stop the game
   function stopGame() {
-    gameActive = false;
     table.removeEventListener("click", detectClick);
   }
 
