@@ -8,72 +8,93 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="header">
-      <h1>Tic Tac Toe</h1>
-    </header>
-    <main class="main">
-      <p class="player-turn"></p>
-      <table class="board">
-        <tr class="row">
-          <td class="cell"></td>
-          <td class="cell"></td>
-          <td class="cell"></td>
-        </tr>
-        <tr class="row">
-          <td class="cell"></td>
-          <td class="cell"></td>
-          <td class="cell"></td>
-        </tr>
-        <tr class="row">
-          <td class="cell"></td>
-          <td class="cell"></td>
-          <td class="cell"></td>
-        </tr>
-      </table>
-    </main>
-    <section class="section">
-      <dialog class="dialog" open closedby="closerequest">
-        <form class="form" method="dialog" onsubmit="return false">
-          <p>
-            <label for="first-player">Player 1</label>
-            <input
-              type="text"
-              id="first-player"
-              name="first-player"
-              class="first-player"
-              required
-            />
-            <select name="symbol-a" id="symbol-a" class="symbol-a">
-              <option value="✕">✕</option>
-              <option value="⭕">⭕</option>
-            </select>
-          </p>
-          <p>
-            <label for="second-player">Player 2</label>
-            <input
-              type="text"
-              id="second-player"
-              name="second-player"
-              class="second-player"
-              required
-            />
-            <select name="symbol-b" id="symbol-b" class="symbol-b">
-              <option value="⭕">⭕</option>
-              <option value="✕">✕</option>
-            </select>
-          </p>
-          <p>
-            <button type="submit" class="start">Start Game</button>
-          </p>
-        </form>
-      </dialog>
-    </section>
-    <section>
-      <dialog class="dialog finish" closedby="closerequest">
-        <p class="winner"></p>
-        <button class="restart">Restart Game</button>
-      </dialog>
-    </section>
+    <div class="body-container">
+      <header class="header">
+        <h1>Tic Tac Toe</h1>
+      </header>
+      <main class="main">
+        <p class="player-turn"></p>
+        <table class="board visible">
+          <tr class="row">
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
+          </tr>
+          <tr class="row">
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
+          </tr>
+          <tr class="row">
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
+          </tr>
+        </table>
+      </main>
+      <section class="section">
+        <dialog class="dialog" open closedby="closerequest">
+          <div class="container">
+            <section class="instructions">
+              <h2>How to Play</h2>
+              <ol>
+                <li>Enter player names and choose symbols (✕ or ⭕)</li>
+                <li>Click "Start Game" to begin</li>
+                <li>Take turns clicking empty squares</li>
+                <li>
+                  Get three symbols in a row to win (horizontal, vertical, or
+                  diagonal)
+                </li>
+                <li>
+                  Game ends in a tie if all squares are filled with no winner
+                </li>
+              </ol>
+            </section>
+            <form class="form" method="dialog" onsubmit="return false">
+              <p>
+                <label for="first-player">Player 1</label>
+                <input
+                  type="text"
+                  id="first-player"
+                  name="first-player"
+                  class="first-player"
+                  required
+                />
+                <select name="symbol-a" id="symbol-a" class="symbol-a">
+                  <option value="✕">✕</option>
+                  <option value="⭕">⭕</option>
+                </select>
+              </p>
+              <p>
+                <label for="second-player">Player 2</label>
+                <input
+                  type="text"
+                  id="second-player"
+                  name="second-player"
+                  class="second-player"
+                  required
+                />
+                <select name="symbol-b" id="symbol-b" class="symbol-b">
+                  <option value="⭕">⭕</option>
+                  <option value="✕">✕</option>
+                </select>
+              </p>
+              <p>
+                <button type="submit" class="start">Start Game</button>
+              </p>
+            </form>
+          </div>
+        </dialog>
+      </section>
+      <section>
+        <dialog class="finish" closedby="closerequest">
+          <div class="container">
+          <p class="winner"></p>
+          <button class="restart">Restart Game</button>
+          </div>
+        </dialog>
+      </section>
+    </div>
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
   </body>

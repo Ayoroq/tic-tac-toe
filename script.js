@@ -1,6 +1,8 @@
 // Factory function to create game board
 const gameBoard = () => {
-  const board = Array(3).fill().map(() => Array(3).fill(""));
+  const board = Array(3)
+    .fill()
+    .map(() => Array(3).fill(""));
 
   function getBoard() {
     return board;
@@ -14,14 +16,11 @@ const gameBoard = () => {
     board[row][column] = value;
   }
 
-
   return {
     getBoard,
     addMove,
   };
 };
-
-
 
 // function to change the symbols selected by the users
 function changeSymbol() {
@@ -75,21 +74,21 @@ const gameController = () => {
 
   function checkWinner() {
     const b = board.getBoard();
-    
+
     // Check rows
     for (let i = 0; i < 3; i++) {
       if (b[i][0] && b[i][0] === b[i][1] && b[i][1] === b[i][2]) {
         return [b[i][0], i, "rows"];
       }
     }
-    
+
     // Check columns
     for (let i = 0; i < 3; i++) {
       if (b[0][i] && b[0][i] === b[1][i] && b[1][i] === b[2][i]) {
         return [b[0][i], i, "columns"];
       }
     }
-    
+
     // Check diagonals
     if (b[0][0] && b[0][0] === b[1][1] && b[1][1] === b[2][2]) {
       return [b[0][0], "left-diagonal"];
@@ -97,11 +96,10 @@ const gameController = () => {
     if (b[0][2] && b[0][2] === b[1][1] && b[1][1] === b[2][0]) {
       return [b[0][2], "right-diagonal"];
     }
-    
-    // Check for tie
-    return b.flat().every(cell => cell) ? "tie" : null;
-  }
 
+    // Check for tie
+    return b.flat().every((cell) => cell) ? "tie" : null;
+  }
 
   // function to draw line once a winner is determined
   function drawLineThroughWinner(winner) {
@@ -207,13 +205,13 @@ const gameController = () => {
 
   function handleRestart() {
     if (confettiInterval) clearInterval(confettiInterval);
-    
+
     // Reset board display
-    table.querySelectorAll('.cell').forEach(cell => {
-      cell.textContent = '';
-      cell.className = 'cell';
+    table.querySelectorAll(".cell").forEach((cell) => {
+      cell.textContent = "";
+      cell.className = "cell";
     });
-    
+
     // Reset game state
     board = gameBoard();
     currentPlayer = players[0];
@@ -226,8 +224,9 @@ const gameController = () => {
     start.addEventListener("click", () => {
       const name1 = player1.value.trim();
       const name2 = player2.value.trim();
-      
+
       if (name1 && name2 && name1 !== name2) {
+        table.classList.toggle("visible");
         startGame();
         dialog.close();
       }

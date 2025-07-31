@@ -1,39 +1,93 @@
+html,
 body {
   margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
   color: var(--text-colour);
 }
 
-.header{
-    text-align: center;
+.body-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 100vh;
+}
+
+.header {
+  text-align: center;
+  padding: 2rem;
 }
 
 .main {
   background-color: var(--main-colour);
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  height: 100%;
   display: flex;
+  flex-direction: column;
+  gap: 2rem;
   justify-content: center;
+  align-items: center;
+  height: 80%;
+}
+
+main p {
+  align-self: flex-start;
+  justify-self: center;
+  font-size: 2rem;
 }
 
 .cell {
-  height: 5rem;
-  width: 5rem;
-  background-color: rgb(177, 216, 255);
-  border: 0.5px solid black;
+  height: 10rem;
+  width: 10rem;
+  border: 2.5px solid black;
 }
 
-.dialog {
+.dialog,
+.finish {
   position: absolute;
-  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
-  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dialog {
+  top: 56%;
+  padding: 3rem;
+}
+
+.finish {
+  top: 20%;
+  padding: 2rem 2.5rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+button {
+  padding: 0.5rem 2rem;
+  border-radius: 8px;
+  border: none;
+  background-color: chartreuse;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: green;
+  color: white;
+  transition: background-color 0.3s ease;
+  transform: translateY(-0.33em);
+}
+button:active {
+  transform: translateY(0);
+}
+
+.visible {
+  display: none;
 }
 
 .form {
@@ -41,6 +95,11 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+}
+
+.winner {
+  text-align: left;
+  font-size: 1rem;
 }
 
 .board {
@@ -66,9 +125,9 @@ body {
 
 td {
   text-align: center;
-  font-size: x-large;
+  font-size: 5rem;
   font-weight: bold;
-  color: white;
+  color: black;
 }
 
 .diagonal-right,
@@ -125,5 +184,4 @@ td {
     black 50%,
     transparent 50%
   );
-
 }
