@@ -69,6 +69,7 @@ const gameController = () => {
   const restart = document.querySelector(".restart");
   const winnerDetails = document.querySelector(".winner");
   const finish = document.querySelector(".finish");
+  const playerTurn = document.querySelector(".player-turn");
   
 
   changeSymbol();
@@ -255,6 +256,7 @@ const gameController = () => {
       });
     } else {
       switchPlayer();
+      playerTurn.textContent = `${currentPlayer.name}'s turn`;
     }
   }
 
@@ -285,6 +287,7 @@ const gameController = () => {
     board = gameBoard();
     gameActive = true;
     currentPlayer = players[0];
+    playerTurn.textContent = `${currentPlayer.name}'s turn`;
     playRound();
   }
 
