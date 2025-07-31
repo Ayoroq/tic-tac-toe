@@ -6,11 +6,14 @@ A modern, interactive tic-tac-toe game built with vanilla HTML, CSS, and JavaScr
 
 - **Two-player gameplay** with customizable player names
 - **Symbol selection** - Choose between ✕ and ⭕ for each player
+- **Input validation** - Prevents duplicate or empty player names
 - **Visual win indicators** - Lines drawn through winning combinations
 - **Tie game detection** 
 - **Confetti celebration** for winners
+- **In-game instructions** - Built-in how-to-play guide
+- **Current player indicator** - Shows whose turn it is
 - **Responsive design** with clean, modern UI
-- **Game restart functionality**
+- **Instant restart** - No page reload required
 
 ## How to Play
 
@@ -44,12 +47,12 @@ tic-tac-toe/
 
 ### Key Components
 
-- `gameBoard()` - Factory function that creates and manages the 3x3 game board
-- `player()` - Factory function for creating player objects
 - `gameController()` - Main game logic controller
-- `changeSymbol()` - Handles symbol selection synchronization
-- `checkWinner()` - Determines win conditions and tie games
+- `changeSymbol()` - Handles symbol selection synchronization  
+- `checkWinner()` - Optimized winner detection using lookup tables
 - `drawLineThroughWinner()` - Visual indication of winning line
+- `handleRestart()` - Memory-efficient game reset without page reload
+- `addConfetti()` - Celebration animation with proper cleanup
 
 ### Dependencies
 
@@ -68,13 +71,20 @@ tic-tac-toe/
 - Safari
 - Edge
 
+## Performance Optimizations
+
+- **Memory leak prevention** - Proper event listener cleanup
+- **Efficient DOM manipulation** - Minimal reflows and repaints
+- **Clean restart logic** - No page reload, just state reset
+
 ## Future Enhancements
 
 - AI opponent option
 - Score tracking across multiple games
 - Different board sizes (4x4, 5x5)
+- Keyboard navigation support
+- Sound effects
 - Online multiplayer functionality
-- Mobile app version
 
 ## License
 
