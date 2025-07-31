@@ -1,5 +1,3 @@
-// const prompt = require("prompt-sync")({ sigint: true });
-
 // Factory function to create game board
 const gameBoard = () => {
   const board = Array(3).fill().map(() => Array(3).fill(""));
@@ -16,22 +14,14 @@ const gameBoard = () => {
     board[row][column] = value;
   }
 
-  // // Display current board state
-  // function printBoard() {
-  //   for (let i = 0; i < rows; i++) {
-  //     console.log(board[i]);
-  //   }
-  // }
+
   return {
     getBoard,
     addMove,
   };
 };
 
-// Factory function to create players
-const player = (name, symbol) => {
-  return { name, symbol };
-};
+
 
 // function to change the symbols selected by the users
 function changeSymbol() {
@@ -79,11 +69,8 @@ const gameController = () => {
   let currentPlayer;
   const players = [];
 
-  // Switch between players
   function switchPlayer() {
-    currentPlayer === players[0]
-      ? (currentPlayer = players[1])
-      : (currentPlayer = players[0]);
+    currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
   }
 
   function checkWinner() {
@@ -219,15 +206,28 @@ const gameController = () => {
   }
 
   function handleRestart() {
-    clearInterval(confettiInterval);
-    symbolController.cleanup();
-    location.reload();
+    if (confettiInterval) clearInterval(confettiInterval);
+    
+    // Reset board display
+    table.querySelectorAll('.cell').forEach(cell => {
+      cell.textContent = '';
+      cell.className = 'cell';
+    });
+    
+    // Reset game state
+    board = gameBoard();
+    currentPlayer = players[0];
+    playerTurn.textContent = `${currentPlayer.name}'s turn`;
+    finish.close();
+    playRound();
   }
 
-  // function to start/begin the game
   function beginGame() {
-    start.addEventListener("click", (event) => {
-      if (player1.value && player2.value) {
+    start.addEventListener("click", () => {
+      const name1 = player1.value.trim();
+      const name2 = player2.value.trim();
+      
+      if (name1 && name2 && name1 !== name2) {
         startGame();
         dialog.close();
       }
@@ -237,12 +237,10 @@ const gameController = () => {
   }
 
   function startGame() {
-    players.length = 0; // clear the array
-    const firstPlayer = player(player1.value, symbol1.value);
-    const secondPlayer = player(player2.value, symbol2.value);
+    players.length = 0;
     players.push(
-      { name: firstPlayer.name, value: firstPlayer.symbol },
-      { name: secondPlayer.name, value: secondPlayer.symbol }
+      { name: player1.value.trim(), value: symbol1.value },
+      { name: player2.value.trim(), value: symbol2.value }
     );
     board = gameBoard();
     currentPlayer = players[0];
@@ -254,9 +252,9 @@ const gameController = () => {
     table.removeEventListener("click", detectClick);
   }
 
-  return { beginGame, checkWinner };
+  return { beginGame };
 };
 
-// // Start the game
+// Start the game
 const game = gameController();
 game.beginGame();
